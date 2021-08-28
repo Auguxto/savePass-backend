@@ -33,6 +33,9 @@ class User {
   @Column('uuid', { array: true })
   credentials: string[];
 
+  @Column('uuid', { array: true })
+  cards: string[];
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -44,6 +47,7 @@ class User {
     this.notes = [];
     this.folders = [];
     this.credentials = [];
+    this.cards = [];
   }
 }
 

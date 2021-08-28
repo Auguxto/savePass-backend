@@ -1,7 +1,7 @@
 {
   "name": "primeiro-projeto",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
@@ -9,12 +9,15 @@
     "dev:server": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.37"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.13",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
