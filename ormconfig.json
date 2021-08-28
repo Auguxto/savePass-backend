@@ -1,0 +1,13 @@
+{
+  "type": "postgres",
+  "host": "locahost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "save_pass",
+  "entities": ["./src/entities/**.ts"],
+  "migrations": ["./src/database/migrations/**.ts"],
+  "cli": {
+    "migrationsDir": "./src/database/migrations"
+  }
+}
