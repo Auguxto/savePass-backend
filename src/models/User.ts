@@ -4,6 +4,9 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,6 +14,7 @@ import {
 import Address from './Address';
 
 import Info from './Info';
+import Note from './Note';
 
 @Entity('users')
 class User {
@@ -31,8 +35,8 @@ class User {
   @OneToOne(() => Address)
   address: Address;
 
-  @Column('uuid', { array: true })
-  notes: string[];
+  @OneToMany(() => Note, note => note.user)
+  notes: Note[];
 
   @Column('uuid', { array: true })
   folders: string[];

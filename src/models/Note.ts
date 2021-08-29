@@ -2,14 +2,22 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import User from './User';
 
 @Entity('notes')
 class Note {
   @PrimaryGeneratedColumn()
   readonly id: string;
+
+  @JoinColumn({ name: 'user' })
+  @ManyToOne(() => User)
+  user: User;
 
   @Column()
   name: string;

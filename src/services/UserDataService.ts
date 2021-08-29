@@ -24,6 +24,7 @@ class UserDataService {
     }
 
     const note = notesRepository.create({
+      user,
       name,
       note: note_text,
     });

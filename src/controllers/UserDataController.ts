@@ -26,7 +26,7 @@ class UserDataController {
       note_text,
     });
 
-    return response.json(note);
+    return response.json({ note });
   }
 }
 

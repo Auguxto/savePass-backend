@@ -26,7 +26,7 @@ usersRouter.get('/', async (request, response) => {
   const usersRepo = getCustomRepository(UsersRepository);
 
   const user = await usersRepo.findOne({
-    relations: ['infos', 'address'],
+    relations: ['infos', 'address', 'notes'],
   });
 
   return response.json({ user });
