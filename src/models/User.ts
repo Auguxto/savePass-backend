@@ -28,7 +28,7 @@ class User {
   infos: Info;
 
   @JoinColumn({ name: 'address' })
-  @OneToOne(() => Info)
+  @OneToOne(() => Address)
   address: Address;
 
   @Column('uuid', { array: true })

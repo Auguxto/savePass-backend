@@ -5,6 +5,7 @@ import AppError from '../error/AppError';
 import Info from '../models/Info';
 
 import User from '../models/User';
+import Address from '../models/Address';
 
 import UsersRepository from '../repositories/UsersRepository';
 
@@ -20,6 +21,16 @@ interface IUpdate {
   age: number;
   telephone: string;
   birthday: Date;
+}
+
+interface IUpdateAddress {
+  user_id: string;
+  country: string;
+  state: string;
+  city: string;
+  road: string;
+  district: string;
+  number: number;
 }
 
 class UserService {
@@ -74,6 +85,45 @@ class UserService {
     await infosRepository.save(info);
 
     user.infos = info;
+
+    await usersRepository.save(user);
+
+    return user;
+  }
+
+  async updateAddress({
+    user_id,
+    country,
+    state,
+    city,
+    road,
+    district,
+    number,
+  }: IUpdateAddress): Promise<User> {
+    const usersRepository = getCustomRepository(UsersRepository);
+    const addressRepository = getRepository(Address);
+    const user = await usersRepository.findOne(user_id);
+
+    if (!user) {
+      throw new AppError('User not found');
+    }
+
+    if (user.address) {
+      user.address = null;
+    }
+
+    const address = addressRepository.create({
+      country,
+      state,
+      city,
+      road,
+      district,
+      number,
+    });
+
+    await addressRepository.save(address);
+
+    user.address = address;
 
     await usersRepository.save(user);
 

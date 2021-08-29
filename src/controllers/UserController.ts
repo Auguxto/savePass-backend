@@ -16,9 +16,22 @@ interface IUpdateInfo {
   birthday: Date;
 }
 
+interface IUpdateAddress {
+  country: string;
+  state: string;
+  city: string;
+  road: string;
+  district: string;
+  number: number;
+}
+
 class UserController {
   async create(request: Request, response: Response) {
     const { email, password }: ICreate = request.body;
+
+    if (!email || !password) {
+      throw new AppError('Invalid request');
+    }
 
     if (password.length <= 4) {
       throw new AppError('Password length has be bigger than 4');
@@ -38,6 +51,10 @@ class UserController {
       request.body;
     const user_id = request.user.id;
 
+    if (!name || !gender || !age || !telephone || !birthday) {
+      throw new AppError('Invalid request');
+    }
+
     const userService = new UserService();
 
     let user = await userService.updateInfo({
@@ -47,6 +64,30 @@ class UserController {
       age,
       telephone,
       birthday,
+    });
+
+    return response.json({ user });
+  }
+
+  async updateAddress(request: Request, response: Response) {
+    const { country, state, city, road, district, number }: IUpdateAddress =
+      request.body;
+    const user_id = request.user.id;
+
+    if (!country || !state || !city || !road || !district || !number) {
+      throw new AppError('Invalid request');
+    }
+
+    const userService = new UserService();
+
+    let user = await userService.updateAddress({
+      user_id,
+      country,
+      state,
+      city,
+      road,
+      district,
+      number,
     });
 
     return response.json({ user });

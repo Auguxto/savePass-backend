@@ -13,10 +13,11 @@ const userController = new UserController();
 
 usersRouter.post('/', userController.create);
 usersRouter.patch('/info', isAuth, userController.updateInfo);
+usersRouter.patch('/address', isAuth, userController.updateAddress);
 usersRouter.get('/', async (request, response) => {
   const usersRepo = getCustomRepository(UsersRepository);
 
-  const users = await usersRepo.find({ relations: ['infos'] });
+  const users = await usersRepo.find({ relations: ['infos', 'address'] });
 
   return response.json({ users });
 });
