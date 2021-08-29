@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import { getCustomRepository } from 'typeorm';
 
 import isAuth from '../middlewares/isAuth';
 
 import UserController from '../controllers/UserController';
-import { getCustomRepository } from 'typeorm';
+
 import UsersRepository from '../repositories/UsersRepository';
 
 const usersRouter = Router();

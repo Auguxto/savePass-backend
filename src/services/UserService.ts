@@ -59,6 +59,10 @@ class UserService {
       throw new AppError('User not found');
     }
 
+    if (user.infos) {
+      user.infos = null;
+    }
+
     const info = infosRepository.create({
       name,
       gender,
@@ -69,7 +73,7 @@ class UserService {
 
     await infosRepository.save(info);
 
-    user.infos = info.id;
+    user.infos = info;
 
     await usersRepository.save(user);
 

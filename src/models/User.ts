@@ -4,11 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import Address from './Address';
 
 import Info from './Info';
 
@@ -25,10 +25,11 @@ class User {
 
   @JoinColumn({ name: 'infos' })
   @OneToOne(() => Info)
-  infos: string;
+  infos: Info;
 
-  @Column()
-  address: string;
+  @JoinColumn({ name: 'address' })
+  @OneToOne(() => Info)
+  address: Address;
 
   @Column('uuid', { array: true })
   notes: string[];
