@@ -18,6 +18,15 @@ interface ICreateCredential {
   note?: string;
 }
 
+interface ICreateCard {
+  name: string;
+  number: string;
+  flag: string;
+  bank?: string;
+  security_code: string;
+  note?: string;
+}
+
 class UserDataController {
   async createNote(request: Request, response: Response) {
     const { name, note_text }: ICreateNote = request.body;
@@ -66,6 +75,30 @@ class UserDataController {
     });
 
     return response.json({ credential });
+  }
+
+  async createCard(request: Request, response: Response) {
+    const { name, number, flag, bank, security_code, note }: ICreateCard =
+      request.body;
+    const user_id = request.user.id;
+
+    if (!name || !number || !flag || !security_code) {
+      throw new AppError('Invalid request');
+    }
+
+    const userData = new UserDataService();
+
+    const card = await userData.createCard({
+      user_id,
+      name,
+      number,
+      flag,
+      bank,
+      security_code,
+      note,
+    });
+
+    return response.json({ card });
   }
 }
 

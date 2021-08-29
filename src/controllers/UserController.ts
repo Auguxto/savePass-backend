@@ -9,20 +9,20 @@ interface ICreate {
 }
 
 interface IUpdateInfo {
-  name: string;
-  gender: string;
-  age: number;
-  telephone: string;
-  birthday: Date;
+  name?: string;
+  gender?: string;
+  age?: number;
+  telephone?: string;
+  birthday?: Date;
 }
 
 interface IUpdateAddress {
-  country: string;
-  state: string;
-  city: string;
-  road: string;
-  district: string;
-  number: number;
+  country?: string;
+  state?: string;
+  city?: string;
+  road?: string;
+  district?: string;
+  number?: number;
 }
 
 class UserController {
@@ -51,7 +51,7 @@ class UserController {
       request.body;
     const user_id = request.user.id;
 
-    if (!name || !gender || !age || !telephone || !birthday) {
+    if (!request.body) {
       throw new AppError('Invalid request');
     }
 

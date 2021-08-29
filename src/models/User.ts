@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import Address from './Address';
+import Card from './Card';
 import Credential from './Credential';
 
 import Info from './Info';
@@ -39,6 +40,9 @@ class User {
 
   @OneToMany(() => Credential, credential => credential.user)
   credentials: Credential[];
+
+  @OneToMany(() => Card, card => card.user)
+  cards: Card[];
 
   @CreateDateColumn()
   created_at: Date;

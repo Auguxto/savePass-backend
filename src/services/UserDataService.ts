@@ -3,8 +3,8 @@ import { getCustomRepository, getRepository } from 'typeorm';
 import AppError from '../error/AppError';
 
 import Note from '../models/Note';
-import User from '../models/User';
 import Credential from '../models/Credential';
+import Card from '../models/Card';
 
 import UsersRepository from '../repositories/UsersRepository';
 
@@ -21,6 +21,16 @@ interface ICreateCredential {
   username?: string;
   email?: string;
   telephone?: string;
+  note?: string;
+}
+
+interface ICreateCard {
+  user_id: string;
+  name: string;
+  number: string;
+  flag: string;
+  bank?: string;
+  security_code: string;
   note?: string;
 }
 
@@ -48,19 +58,11 @@ class UserDataService {
     return note;
   }
 
-  async createCredential({
-    user_id,
-    name,
-    password,
-    username,
-    email,
-    telephone,
-    note,
-  }: ICreateCredential): Promise<Credential> {
+  async createCredential(params: ICreateCredential): Promise<Credential> {
     const usersRepository = getCustomRepository(UsersRepository);
     const credentialsRepository = getRepository(Credential);
 
-    const user = await usersRepository.findOne(user_id, {
+    const user = await usersRepository.findOne(params.user_id, {
       select: ['id'],
     });
 
@@ -70,17 +72,34 @@ class UserDataService {
 
     const credential = credentialsRepository.create({
       user,
-      name,
-      password,
-      username,
-      email,
-      telephone,
-      note,
+      ...params,
     });
 
     await credentialsRepository.save(credential);
 
     return credential;
+  }
+
+  async createCard(params: ICreateCard): Promise<Card> {
+    const usersRepository = getCustomRepository(UsersRepository);
+    const cardsRepository = getRepository(Card);
+
+    const user = await usersRepository.findOne(params.user_id, {
+      select: ['id'],
+    });
+
+    if (!user) {
+      throw new AppError('User not found');
+    }
+
+    const card = cardsRepository.create({
+      user,
+      ...params,
+    });
+
+    await cardsRepository.save(card);
+
+    return card;
   }
 }
 

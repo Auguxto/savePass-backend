@@ -64,14 +64,16 @@ class UserService {
   }: IUpdate): Promise<User> {
     const usersRepository = getCustomRepository(UsersRepository);
     const infosRepository = getRepository(Info);
-    const user = await usersRepository.findOne(user_id);
+    const user = await usersRepository.findOne(user_id, {
+      relations: ['infos'],
+    });
 
     if (!user) {
       throw new AppError('User not found');
     }
 
     if (user.infos) {
-      user.infos = null;
+      await infosRepository.remove(user.infos);
     }
 
     const info = infosRepository.create({
@@ -102,14 +104,16 @@ class UserService {
   }: IUpdateAddress): Promise<User> {
     const usersRepository = getCustomRepository(UsersRepository);
     const addressRepository = getRepository(Address);
-    const user = await usersRepository.findOne(user_id);
+    const user = await usersRepository.findOne(user_id, {
+      relations: ['address'],
+    });
 
     if (!user) {
       throw new AppError('User not found');
     }
 
     if (user.address) {
-      user.address = null;
+      await addressRepository.remove(user.address);
     }
 
     const address = addressRepository.create({
