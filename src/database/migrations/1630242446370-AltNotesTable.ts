@@ -30,6 +30,6 @@ export class AltNotesTable1630242446370 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey('notes', 'UserId');
-    await queryRunner.dropColumn('notes', 'user_id');
+    await queryRunner.dropColumn('notes', 'user');
   }
 }

@@ -3,6 +3,7 @@ import { getCustomRepository, getRepository } from 'typeorm';
 import AppError from '../error/AppError';
 
 import Note from '../models/Note';
+import User from '../models/User';
 
 import UsersRepository from '../repositories/UsersRepository';
 
@@ -17,7 +18,9 @@ class UserDataService {
     const usersRepository = getCustomRepository(UsersRepository);
     const notesRepository = getRepository(Note);
 
-    const user = await usersRepository.findOne(user_id);
+    const user = await usersRepository.findOne(user_id, {
+      select: ['id'],
+    });
 
     if (!user) {
       throw new AppError('User not found');
@@ -30,10 +33,6 @@ class UserDataService {
     });
 
     await notesRepository.save(note);
-
-    user.notes.push(note.id);
-
-    await usersRepository.save(user);
 
     return note;
   }
