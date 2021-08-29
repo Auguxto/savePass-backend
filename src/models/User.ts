@@ -1,17 +1,16 @@
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 import Address from './Address';
+import Credential from './Credential';
 
 import Info from './Info';
 import Note from './Note';
@@ -37,6 +36,9 @@ class User {
 
   @OneToMany(() => Note, note => note.user)
   notes: Note[];
+
+  @OneToMany(() => Credential, credential => credential.user)
+  credentials: Credential[];
 
   @CreateDateColumn()
   created_at: Date;

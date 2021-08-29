@@ -21,12 +21,17 @@ usersRouter.patch('/info', isAuth, userController.updateInfo);
 usersRouter.patch('/address', isAuth, userController.updateAddress);
 // Data
 usersRouter.post('/add/note', isAuth, userDataController.createNote);
+usersRouter.post(
+  '/add/credential',
+  isAuth,
+  userDataController.createCredential,
+);
 
 usersRouter.get('/', async (request, response) => {
   const usersRepo = getCustomRepository(UsersRepository);
 
   const user = await usersRepo.findOne({
-    relations: ['infos', 'address', 'notes'],
+    relations: ['infos', 'address', 'notes', 'credentials'],
   });
 
   return response.json({ user });

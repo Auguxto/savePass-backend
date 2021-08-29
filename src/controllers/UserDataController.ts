@@ -9,6 +9,15 @@ interface ICreateNote {
   note_text: string;
 }
 
+interface ICreateCredential {
+  name: string;
+  password: string;
+  username?: string;
+  email?: string;
+  telephone?: string;
+  note?: string;
+}
+
 class UserDataController {
   async createNote(request: Request, response: Response) {
     const { name, note_text }: ICreateNote = request.body;
@@ -27,6 +36,36 @@ class UserDataController {
     });
 
     return response.json({ note });
+  }
+
+  async createCredential(request: Request, response: Response) {
+    const {
+      name,
+      password,
+      username,
+      email,
+      telephone,
+      note,
+    }: ICreateCredential = request.body;
+    const user_id = request.user.id;
+
+    if (!name || !password) {
+      throw new AppError('Invalid request');
+    }
+
+    const userData = new UserDataService();
+
+    const credential = await userData.createCredential({
+      user_id,
+      name,
+      password,
+      username,
+      email,
+      telephone,
+      note,
+    });
+
+    return response.json({ credential });
   }
 }
 
