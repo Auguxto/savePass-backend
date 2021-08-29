@@ -18,7 +18,7 @@ interface Response {
   user: User;
 }
 
-class UserSession {
+class UserSessionService {
   public async create({ email, password }: Props): Promise<Response> {
     const usersRepository = getCustomRepository(UsersRepository);
 
@@ -51,4 +51,4 @@ class UserSession {
   }
 }
 
-export default UserSession;
+export default UserSessionService;
