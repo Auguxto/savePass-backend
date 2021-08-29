@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import sessionsRouter from './routes.session';
 
 import usersRouter from './routes.users';
 
@@ -9,5 +10,6 @@ routes.get('/', (request, response) => {
 });
 
 routes.use('/users', usersRouter);
+routes.use('/sessions', sessionsRouter);
 
 export default routes;

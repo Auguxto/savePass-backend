@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 import 'express-async-errors';
+import { config } from 'dotenv';
+config();
 import express from 'express';
 
 import './database/database';

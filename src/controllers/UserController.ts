@@ -18,7 +18,7 @@ class UserController {
 
     const userService = new UserService();
 
-    let user = await userService.execute({ email, password });
+    let user = await userService.create({ email, password });
 
     delete user.password;
 

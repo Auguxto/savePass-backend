@@ -13,12 +13,12 @@ interface Props {
 }
 
 class UserService {
-  async execute({ email, password }: Props): Promise<User> {
+  async create({ email, password }: Props): Promise<User> {
     const usersRepository = getCustomRepository(UsersRepository);
     const exists = await usersRepository.exists(email);
 
     if (exists) {
-      throw new AppError('User already exists');
+      throw new AppError('User already exists', 401);
     }
 
     const hashedPassword = await hash(password, 8);
