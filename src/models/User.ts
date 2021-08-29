@@ -3,9 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import Info from './Info';
 
 @Entity('users')
 class User {
@@ -18,7 +23,8 @@ class User {
   @Column({ select: false })
   password: string;
 
-  @Column()
+  @JoinColumn({ name: 'infos' })
+  @OneToOne(() => Info)
   infos: string;
 
   @Column()

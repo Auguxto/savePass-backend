@@ -1,19 +1,29 @@
 import { hash } from 'bcryptjs';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getRepository } from 'typeorm';
 
 import AppError from '../error/AppError';
+import Info from '../models/Info';
 
 import User from '../models/User';
 
 import UsersRepository from '../repositories/UsersRepository';
 
-interface Props {
+interface ICreate {
   email: string;
   password: string;
 }
 
+interface IUpdate {
+  user_id: string;
+  name: string;
+  gender: string;
+  age: number;
+  telephone: string;
+  birthday: Date;
+}
+
 class UserService {
-  async create({ email, password }: Props): Promise<User> {
+  async create({ email, password }: ICreate): Promise<User> {
     const usersRepository = getCustomRepository(UsersRepository);
     const exists = await usersRepository.exists(email);
 
@@ -27,6 +37,39 @@ class UserService {
       email,
       password: hashedPassword,
     });
+
+    await usersRepository.save(user);
+
+    return user;
+  }
+
+  async updateInfo({
+    user_id,
+    name,
+    gender,
+    age,
+    telephone,
+    birthday,
+  }: IUpdate): Promise<User> {
+    const usersRepository = getCustomRepository(UsersRepository);
+    const infosRepository = getRepository(Info);
+    const user = await usersRepository.findOne(user_id);
+
+    if (!user) {
+      throw new AppError('User not found');
+    }
+
+    const info = infosRepository.create({
+      name,
+      gender,
+      age,
+      telephone,
+      birthday,
+    });
+
+    await infosRepository.save(info);
+
+    user.infos = info.id;
 
     await usersRepository.save(user);
 
