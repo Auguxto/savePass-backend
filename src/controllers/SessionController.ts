@@ -18,8 +18,6 @@ class SessionController {
       password,
     });
 
-    delete user.password;
-
     return response.json({ token, user });
   }
 }
