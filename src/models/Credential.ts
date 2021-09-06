@@ -22,7 +22,7 @@ class Credential {
   user: User;
 
   @JoinColumn({ name: 'folder' })
-  @OneToMany(() => Folder, folder => folder.user)
+  @ManyToOne(() => Folder)
   folder: Folder;
 
   @Column()

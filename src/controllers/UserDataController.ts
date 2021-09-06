@@ -7,6 +7,8 @@ import UserDataService from '../services/UserDataService';
 interface ICreateNote {
   name: string;
   note_text: string;
+  favorite?: boolean;
+  folder?: string;
 }
 
 interface ICreateCredential {
@@ -16,6 +18,8 @@ interface ICreateCredential {
   email?: string;
   telephone?: string;
   note?: string;
+  favorite?: boolean;
+  folder?: string;
 }
 
 interface ICreateCard {
@@ -25,11 +29,17 @@ interface ICreateCard {
   bank?: string;
   security_code: string;
   note?: string;
+  favorite?: boolean;
+  folder?: string;
+}
+
+interface ICreateFolder {
+  name: string;
 }
 
 class UserDataController {
   async createNote(request: Request, response: Response) {
-    const { name, note_text }: ICreateNote = request.body;
+    const { name, note_text, favorite, folder }: ICreateNote = request.body;
     const user_id = request.user.id;
 
     if (!name || !note_text) {
@@ -42,6 +52,8 @@ class UserDataController {
       user_id,
       name,
       note_text,
+      folder,
+      favorite,
     });
 
     return response.json({ note });
@@ -55,6 +67,8 @@ class UserDataController {
       email,
       telephone,
       note,
+      favorite,
+      folder,
     }: ICreateCredential = request.body;
     const user_id = request.user.id;
 
@@ -72,14 +86,24 @@ class UserDataController {
       email,
       telephone,
       note,
+      favorite,
+      folder,
     });
 
     return response.json({ credential });
   }
 
   async createCard(request: Request, response: Response) {
-    const { name, number, flag, bank, security_code, note }: ICreateCard =
-      request.body;
+    const {
+      name,
+      number,
+      flag,
+      bank,
+      security_code,
+      note,
+      favorite,
+      folder,
+    }: ICreateCard = request.body;
     const user_id = request.user.id;
 
     if (!name || !number || !flag || !security_code) {
@@ -96,9 +120,43 @@ class UserDataController {
       bank,
       security_code,
       note,
+      favorite,
+      folder,
     });
 
     return response.json({ card });
+  }
+
+  async createFolder(request: Request, response: Response) {
+    const { name }: ICreateFolder = request.body;
+    const user_id = request.user.id;
+
+    if (!name) {
+      throw new AppError('Invalid request');
+    }
+
+    const userData = new UserDataService();
+
+    const folder = await userData.createFolder({
+      user_id,
+      name,
+    });
+
+    return response.json({ folder });
+  }
+
+  async getFolderData(request: Request, response: Response) {
+    const { folder_id } = request.params;
+    const user_id = request.user.id;
+
+    const userData = new UserDataService();
+
+    const folder = await userData.getFolderData({
+      folder_id,
+      user_id,
+    });
+
+    return response.json({ folder });
   }
 }
 

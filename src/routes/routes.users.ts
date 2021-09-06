@@ -26,13 +26,20 @@ usersRouter.post(
   isAuth,
   userDataController.createCredential,
 );
+usersRouter.post('/add/folder', isAuth, userDataController.createFolder);
+
+usersRouter.get(
+  '/folders/:folder_id',
+  isAuth,
+  userDataController.getFolderData,
+);
 
 usersRouter.get('/', async (request, response) => {
   const usersRepo = getCustomRepository(UsersRepository);
 
   // relations: ['infos', 'address', 'notes', 'credentials', 'cards'],
   const user = await usersRepo.findOne({
-    relations: ['infos', 'address', 'notes', 'credentials', 'cards'],
+    relations: ['infos', 'address', 'notes', 'credentials', 'cards', 'folders'],
   });
 
   return response.json({ user });

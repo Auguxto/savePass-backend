@@ -12,9 +12,9 @@ import {
 import Address from './Address';
 import Card from './Card';
 import Credential from './Credential';
-
 import Info from './Info';
 import Note from './Note';
+import Folder from './Folder';
 
 @Entity('users')
 class User {
@@ -43,6 +43,9 @@ class User {
 
   @OneToMany(() => Card, card => card.user)
   cards: Card[];
+
+  @OneToMany(() => Folder, folder => folder.user)
+  folders: Folder[];
 
   @CreateDateColumn()
   created_at: Date;
