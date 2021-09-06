@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import User from './User';
+import Folder from './Folder';
 
 @Entity('notes')
 class Note {
@@ -18,6 +20,10 @@ class Note {
   @JoinColumn({ name: 'user' })
   @ManyToOne(() => User)
   user: User;
+
+  @JoinColumn({ name: 'folder' })
+  @OneToMany(() => Folder, folder => folder.user)
+  folder: Folder;
 
   @Column()
   name: string;
