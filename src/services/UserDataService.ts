@@ -8,6 +8,7 @@ import Card from '../models/Card';
 import Folder from '../models/Folder';
 
 import UsersRepository from '../repositories/UsersRepository';
+import FoldersRepository from '../repositories/FoldersRepository';
 
 interface ICreateNote {
   user_id: string;
@@ -52,157 +53,67 @@ interface IGetFolderData {
 }
 
 class UserDataService {
-  async createNote({
-    user_id,
-    name,
-    note_text,
-    favorite,
-    folder,
-  }: ICreateNote): Promise<Note> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const notesRepository = getRepository(Note);
-    const foldersRepository = getRepository(Folder);
+  usersRepository = getCustomRepository(UsersRepository);
+  notesRepository = getRepository(Note);
+  foldersRepository = getCustomRepository(FoldersRepository);
+  credentialsRepository = getRepository(Credential);
+  cardsRepository = getRepository(Card);
 
-    let dFolder: Folder;
+  async createNote(params: ICreateNote): Promise<Note> {
+    let dFolder = params.folder
+      ? (await this.foldersRepository.exists(params.folder)).folder
+      : null;
 
-    if (folder) {
-      try {
-        dFolder = await foldersRepository.findOne(folder);
-      } catch {
-        throw new AppError('Invalid folder');
-      }
-
-      if (!dFolder) {
-        throw new AppError('Folder not found');
-      }
-    }
-
-    const user = await usersRepository.findOne(user_id, {
+    const user = await this.usersRepository.findOne(params.user_id, {
       select: ['id'],
     });
 
-    if (!user) {
-      throw new AppError('User not found');
-    }
-
-    const note = notesRepository.create({
+    const note = this.notesRepository.create({
+      ...params,
       user,
-      name,
-      note: note_text,
-      favorite,
+      note: params.note_text,
       folder: dFolder,
     });
 
-    await notesRepository.save(note);
-
+    await this.notesRepository.save(note);
     return note;
   }
 
-  async createCredential({
-    name,
-    password,
-    user_id,
-    email,
-    favorite,
-    folder,
-    note,
-    telephone,
-    username,
-  }: ICreateCredential): Promise<Credential> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const credentialsRepository = getRepository(Credential);
-    const foldersRepository = getRepository(Folder);
+  async createCredential(params: ICreateCredential): Promise<Credential> {
+    let dFolder = params.folder
+      ? (await this.foldersRepository.exists(params.folder)).folder
+      : null;
 
-    let dFolder: Folder;
-
-    if (folder) {
-      try {
-        dFolder = await foldersRepository.findOne(folder);
-      } catch {
-        throw new AppError('Invalid folder');
-      }
-
-      if (!dFolder) {
-        throw new AppError('Folder not found');
-      }
-    }
-
-    const user = await usersRepository.findOne(user_id, {
+    const user = await this.usersRepository.findOne(params.user_id, {
       select: ['id'],
     });
 
-    if (!user) {
-      throw new AppError('User not found');
-    }
-
-    const credential = credentialsRepository.create({
+    const credential = this.credentialsRepository.create({
+      ...params,
       user,
-      name,
-      password,
-      email,
-      favorite,
-      note,
-      telephone,
-      username,
       folder: dFolder,
     });
 
-    await credentialsRepository.save(credential);
-
+    await this.credentialsRepository.save(credential);
     return credential;
   }
 
-  async createCard({
-    name,
-    number,
-    flag,
-    security_code,
-    user_id,
-    favorite,
-    bank,
-    folder,
-    note,
-  }: ICreateCard): Promise<Card> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const cardsRepository = getRepository(Card);
-    const foldersRepository = getRepository(Folder);
+  async createCard(params: ICreateCard): Promise<Card> {
+    let dFolder = params.folder
+      ? (await this.foldersRepository.exists(params.folder)).folder
+      : null;
 
-    let dFolder: Folder;
-
-    if (folder) {
-      try {
-        dFolder = await foldersRepository.findOne(folder);
-      } catch {
-        throw new AppError('Invalid folder');
-      }
-
-      if (!dFolder) {
-        throw new AppError('Folder not found');
-      }
-    }
-
-    const user = await usersRepository.findOne(user_id, {
+    const user = await this.usersRepository.findOne(params.user_id, {
       select: ['id'],
     });
 
-    if (!user) {
-      throw new AppError('User not found');
-    }
-
-    const card = cardsRepository.create({
+    const card = this.cardsRepository.create({
+      ...params,
       user,
-      name,
-      number,
-      security_code,
-      flag,
-      bank,
-      favorite,
-      note,
       folder: dFolder,
     });
 
-    await cardsRepository.save(card);
-
+    await this.cardsRepository.save(card);
     return card;
   }
 
@@ -214,22 +125,17 @@ class UserDataService {
       select: ['id'],
     });
 
-    if (!user) {
-      throw new AppError('User not found');
-    }
-
     const folder = foldersRepository.create({
       user,
       ...params,
     });
 
     await foldersRepository.save(folder);
-
     return folder;
   }
 
   async getFolderData({ folder_id, user_id }: IGetFolderData): Promise<Folder> {
-    const foldersRepository = getRepository(Folder);
+    const foldersRepository = getCustomRepository(FoldersRepository);
 
     const folder = await foldersRepository.findOne(folder_id, {
       relations: ['user', 'notes', 'credentials', 'cards'],
@@ -237,9 +143,7 @@ class UserDataService {
 
     if (!folder) {
       throw new AppError('Folder not found');
-    }
-
-    if (folder.user.id !== user_id) {
+    } else if (folder.user.id !== user_id) {
       throw new AppError('Unauthorized', 401);
     }
 
