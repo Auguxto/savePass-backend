@@ -7,9 +7,7 @@ import Folder from '../models/Folder';
 
 @EntityRepository(Folder)
 class FoldersRepository extends Repository<Folder> {
-  public async exists(
-    folder_id: string,
-  ): Promise<{ exists: boolean; folder?: Folder }> {
+  public async get(folder_id: string): Promise<Folder | null> {
     const isUuid = validate(folder_id);
     if (!isUuid) {
       throw new AppError('Invalid folder');
@@ -17,8 +15,8 @@ class FoldersRepository extends Repository<Folder> {
     const folder = await this.findOne(folder_id, {
       select: ['id'],
     });
-    if (folder) return { exists: true, folder };
-    return { exists: false };
+    if (folder) return folder;
+    return null;
   }
 }
 

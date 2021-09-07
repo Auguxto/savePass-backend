@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
 
-import AppError from '../error/AppError';
+import AppError from '../../../error/AppError';
 
-import UserDataService from '../services/UserDataService';
+import CreateDataService from '../../../services/user/CreateDataService';
 
-interface ICreateNote {
+type Note = {
   name: string;
   note_text: string;
   favorite?: boolean;
   folder?: string;
-}
+};
 
-interface ICreateCredential {
+type Credential = {
   name: string;
   password: string;
   username?: string;
@@ -20,9 +20,9 @@ interface ICreateCredential {
   note?: string;
   favorite?: boolean;
   folder?: string;
-}
+};
 
-interface ICreateCard {
+type Card = {
   name: string;
   number: string;
   flag: string;
@@ -31,22 +31,22 @@ interface ICreateCard {
   note?: string;
   favorite?: boolean;
   folder?: string;
-}
+};
 
-interface ICreateFolder {
+type Folder = {
   name: string;
-}
+};
 
-class UserDataController {
+class CreateDataController {
   async createNote(request: Request, response: Response) {
-    const { name, note_text, favorite, folder }: ICreateNote = request.body;
+    const { name, note_text, favorite, folder }: Note = request.body;
     const user_id = request.user.id;
 
     if (!name || !note_text) {
       throw new AppError('Invalid request');
     }
 
-    const userData = new UserDataService();
+    const userData = new CreateDataService();
 
     const note = await userData.createNote({
       user_id,
@@ -69,14 +69,14 @@ class UserDataController {
       note,
       favorite,
       folder,
-    }: ICreateCredential = request.body;
+    }: Credential = request.body;
     const user_id = request.user.id;
 
     if (!name || !password) {
       throw new AppError('Invalid request');
     }
 
-    const userData = new UserDataService();
+    const userData = new CreateDataService();
 
     const credential = await userData.createCredential({
       user_id,
@@ -103,14 +103,14 @@ class UserDataController {
       note,
       favorite,
       folder,
-    }: ICreateCard = request.body;
+    }: Card = request.body;
     const user_id = request.user.id;
 
     if (!name || !number || !flag || !security_code) {
       throw new AppError('Invalid request');
     }
 
-    const userData = new UserDataService();
+    const userData = new CreateDataService();
 
     const card = await userData.createCard({
       user_id,
@@ -128,14 +128,14 @@ class UserDataController {
   }
 
   async createFolder(request: Request, response: Response) {
-    const { name }: ICreateFolder = request.body;
+    const { name }: Folder = request.body;
     const user_id = request.user.id;
 
     if (!name) {
       throw new AppError('Invalid request');
     }
 
-    const userData = new UserDataService();
+    const userData = new CreateDataService();
 
     const folder = await userData.createFolder({
       user_id,
@@ -144,20 +144,6 @@ class UserDataController {
 
     return response.json({ folder });
   }
-
-  async getFolderData(request: Request, response: Response) {
-    const { folder_id } = request.params;
-    const user_id = request.user.id;
-
-    const userData = new UserDataService();
-
-    const folder = await userData.getFolderData({
-      folder_id,
-      user_id,
-    });
-
-    return response.json({ folder });
-  }
 }
 
-export default UserDataController;
+export default CreateDataController;
