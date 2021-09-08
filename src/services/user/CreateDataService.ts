@@ -1,4 +1,5 @@
 import { getCustomRepository, getRepository, Repository } from 'typeorm';
+import { encrypt } from '../../lib/Crypt';
 
 import Note from '../../models/Note';
 import Card from '../../models/Card';
@@ -7,43 +8,6 @@ import Folder from '../../models/Folder';
 import UsersRepository from '../../repositories/UsersRepository';
 import FoldersRepository from '../../repositories/FoldersRepository';
 import Credential from '../../models/Credential';
-
-type INote = {
-  user_id: string;
-  name: string;
-  note_text: string;
-  favorite?: boolean;
-  folder?: string;
-};
-
-type ICredential = {
-  user_id: string;
-  name: string;
-  password: string;
-  username?: string;
-  email?: string;
-  telephone?: string;
-  note?: string;
-  favorite?: boolean;
-  folder?: string;
-};
-
-type ICard = {
-  user_id: string;
-  name: string;
-  number: string;
-  flag: string;
-  bank?: string;
-  security_code: string;
-  note?: string;
-  favorite?: boolean;
-  folder?: string;
-};
-
-type IFolder = {
-  user_id: string;
-  name: string;
-};
 
 class CreateDataService {
   usersRepository: UsersRepository;
@@ -60,7 +24,7 @@ class CreateDataService {
     this.cardsRepository = getRepository(Card);
   }
 
-  async createNote(params: INote): Promise<Note> {
+  async createNote(params: TNote): Promise<Note> {
     let dFolder = params.folder
       ? await this.foldersRepository.get(params.folder)
       : null;
@@ -69,10 +33,12 @@ class CreateDataService {
       select: ['id'],
     });
 
+    const encryptedNote = encrypt(params.note_text, user.id);
+
     const note = this.notesRepository.create({
       ...params,
       user,
-      note: params.note_text,
+      note: encryptedNote,
       folder: dFolder,
     });
 
@@ -81,7 +47,7 @@ class CreateDataService {
     return note;
   }
 
-  async createCredential(params: ICredential): Promise<Credential> {
+  async createCredential(params: TCredential): Promise<Credential> {
     let dFolder = params.folder
       ? await this.foldersRepository.get(params.folder)
       : null;
@@ -90,9 +56,12 @@ class CreateDataService {
       select: ['id'],
     });
 
+    const password = encrypt(params.password, user.id);
+
     const credential = this.credentialsRepository.create({
       ...params,
       user,
+      password,
       folder: dFolder,
     });
 
@@ -100,7 +69,7 @@ class CreateDataService {
     return credential;
   }
 
-  async createCard(params: ICard): Promise<Card> {
+  async createCard(params: TCard): Promise<Card> {
     let dFolder = params.folder
       ? await this.foldersRepository.get(params.folder)
       : null;
@@ -109,9 +78,14 @@ class CreateDataService {
       select: ['id'],
     });
 
+    const number = encrypt(params.number, user.id);
+    const security_code = encrypt(params.security_code, user.id);
+
     const card = this.cardsRepository.create({
       ...params,
       user,
+      number,
+      security_code,
       folder: dFolder,
     });
 
@@ -119,7 +93,7 @@ class CreateDataService {
     return card;
   }
 
-  async createFolder(params: IFolder): Promise<Folder> {
+  async createFolder(params: TFolder): Promise<Folder> {
     const user = await this.usersRepository.findOne(params.user_id, {
       select: ['id'],
     });

@@ -4,8 +4,9 @@ import isAuth from '../../middlewares/isAuth';
 
 import UserController from '../../controllers/user/UserController';
 
-import usersDataRouter from '../user/data/routes.users.data';
 import usersSessionRouter from '../user/session/routes.users.session';
+import usersDataRouter from './data/routes.users.create';
+import usersDataUpdate from './data/routes.users.update';
 
 const usersRouter = Router();
 
@@ -21,5 +22,6 @@ usersRouter.use('/sessions', usersSessionRouter);
 
 // Data
 usersRouter.use('/add', usersDataRouter);
+usersRouter.use('/update', usersDataUpdate);
 
 export default usersRouter;

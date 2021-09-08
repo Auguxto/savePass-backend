@@ -68,10 +68,6 @@ class UserService {
       relations: ['infos'],
     });
 
-    if (!user) {
-      throw new AppError('User not found');
-    }
-
     if (user.infos) {
       await infosRepository.remove(user.infos);
     }
@@ -107,10 +103,6 @@ class UserService {
     const user = await usersRepository.findOne(user_id, {
       relations: ['address'],
     });
-
-    if (!user) {
-      throw new AppError('User not found');
-    }
 
     if (user.address) {
       await addressRepository.remove(user.address);

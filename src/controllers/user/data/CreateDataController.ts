@@ -4,42 +4,9 @@ import AppError from '../../../error/AppError';
 
 import CreateDataService from '../../../services/user/CreateDataService';
 
-type Note = {
-  name: string;
-  note_text: string;
-  favorite?: boolean;
-  folder?: string;
-};
-
-type Credential = {
-  name: string;
-  password: string;
-  username?: string;
-  email?: string;
-  telephone?: string;
-  note?: string;
-  favorite?: boolean;
-  folder?: string;
-};
-
-type Card = {
-  name: string;
-  number: string;
-  flag: string;
-  bank?: string;
-  security_code: string;
-  note?: string;
-  favorite?: boolean;
-  folder?: string;
-};
-
-type Folder = {
-  name: string;
-};
-
 class CreateDataController {
   async createNote(request: Request, response: Response) {
-    const { name, note_text, favorite, folder }: Note = request.body;
+    const { name, note_text, favorite, folder }: TNote = request.body;
     const user_id = request.user.id;
 
     if (!name || !note_text) {
@@ -69,7 +36,7 @@ class CreateDataController {
       note,
       favorite,
       folder,
-    }: Credential = request.body;
+    }: TCredential = request.body;
     const user_id = request.user.id;
 
     if (!name || !password) {
@@ -103,7 +70,7 @@ class CreateDataController {
       note,
       favorite,
       folder,
-    }: Card = request.body;
+    }: TCard = request.body;
     const user_id = request.user.id;
 
     if (!name || !number || !flag || !security_code) {
@@ -128,7 +95,7 @@ class CreateDataController {
   }
 
   async createFolder(request: Request, response: Response) {
-    const { name }: Folder = request.body;
+    const { name }: TFolder = request.body;
     const user_id = request.user.id;
 
     if (!name) {
