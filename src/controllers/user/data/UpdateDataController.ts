@@ -24,6 +24,40 @@ class UpdateDataController {
 
     return response.json({ note });
   }
+
+  async updateCredential(request: Request, response: Response) {
+    const { id } = request.params;
+    const {
+      name,
+      username,
+      email,
+      telephone,
+      favorite,
+      folder,
+      note,
+      password,
+    }: TCredential = request.body;
+    const user_id = request.user.id;
+
+    if (!id) {
+      throw new AppError('Invalid request');
+    }
+
+    const userData = new UpdateDataService();
+
+    const credential = await userData.updateCredential(id, user_id, {
+      name,
+      username,
+      email,
+      telephone,
+      favorite,
+      folder,
+      note,
+      password,
+    });
+
+    return response.json({ credential });
+  }
 }
 
 export default UpdateDataController;

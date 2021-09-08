@@ -10,7 +10,7 @@ class NotesRepository extends Repository<Note> {
   async get(note_id: string): Promise<Note> {
     const isUuid = validate(note_id);
     if (!isUuid) {
-      throw new AppError('Invalid folder');
+      throw new AppError('Invalid note');
     }
     const note = await this.findOne(note_id, {
       select: ['id'],

@@ -9,5 +9,6 @@ const updateData = new UpdateDataController();
 const usersDataUpdate = Router();
 
 usersDataUpdate.patch('/note/:id', isAuth, updateData.updateNote);
+usersDataUpdate.patch('/credential/:id', isAuth, updateData.updateCredential);
 
 export default usersDataUpdate;
