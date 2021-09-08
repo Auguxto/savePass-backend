@@ -58,6 +58,40 @@ class UpdateDataController {
 
     return response.json({ credential });
   }
+
+  async updateCard(request: Request, response: Response) {
+    const { id } = request.params;
+    const {
+      flag,
+      name,
+      number,
+      security_code,
+      bank,
+      favorite,
+      folder,
+      note,
+    }: TCard = request.body;
+    const user_id = request.user.id;
+
+    if (!id) {
+      throw new AppError('Invalid request');
+    }
+
+    const userData = new UpdateDataService();
+
+    const card = await userData.updateCard(id, user_id, {
+      bank,
+      favorite,
+      flag,
+      folder,
+      name,
+      note,
+      number,
+      security_code,
+    });
+
+    return response.json({ card });
+  }
 }
 
 export default UpdateDataController;

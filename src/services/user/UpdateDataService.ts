@@ -1,8 +1,11 @@
 import AppError from '../../error/AppError';
 import { encrypt } from '../../lib/Crypt';
+
+import DataService from './DataService';
+
 import Credential from '../../models/Credential';
 import Note from '../../models/Note';
-import DataService from './DataService';
+import Card from '../../models/Card';
 
 type UpdateNote = {
   name?: string;
@@ -18,6 +21,17 @@ type UpdateCredential = {
   email?: string;
   telephone?: string;
   password?: string;
+  note?: string;
+  favorite?: boolean;
+};
+
+type UpdateCard = {
+  folder?: string;
+  name?: string;
+  number?: string;
+  flag?: string;
+  bank?: string;
+  security_code?: string;
   note?: string;
   favorite?: boolean;
 };
@@ -39,10 +53,15 @@ class UpdateDataService extends DataService {
 
     const encryptedNote = note ? encrypt(note, user.id) : noteData.note;
 
-    noteData.name = name ? name : noteData.name;
+    if (favorite === true) {
+      noteData.favorite = true;
+    } else if (favorite === false) {
+      noteData.favorite = false;
+    }
+
+    noteData.name = name || noteData.name;
     noteData.note = encryptedNote;
-    noteData.folder = folder ? folderData : noteData.folder;
-    noteData.favorite = favorite ? favorite : noteData.favorite;
+    noteData.folder = folderData || noteData.folder;
 
     await this.notesRepository.save(noteData);
 
@@ -78,18 +97,70 @@ class UpdateDataService extends DataService {
       ? encrypt(password, user.id)
       : credentialData.password;
 
-    credentialData.email = email ? email : credentialData.email;
-    credentialData.favorite = favorite ? favorite : credentialData.favorite;
-    credentialData.name = name ? name : credentialData.name;
-    credentialData.note = note ? note : credentialData.note;
-    credentialData.telephone = telephone ? telephone : credentialData.telephone;
-    credentialData.username = username ? username : credentialData.username;
-    credentialData.folder = folder ? folderData : credentialData.folder;
+    if (favorite === true) {
+      credentialData.favorite = true;
+    } else if (favorite === false) {
+      credentialData.favorite = false;
+    }
+
+    credentialData.email = email || credentialData.email;
+    credentialData.name = name || credentialData.name;
+    credentialData.note = note || credentialData.note;
+    credentialData.telephone = telephone || credentialData.telephone;
+    credentialData.username = username || credentialData.username;
+    credentialData.folder = folderData || credentialData.folder;
     credentialData.password = encryptedPassword;
 
     await this.credentialsRepository.save(credentialData);
 
     return credentialData;
+  }
+
+  async updateCard(
+    card_id: string,
+    user_id: string,
+    {
+      bank,
+      favorite,
+      flag,
+      folder,
+      name,
+      note,
+      number,
+      security_code,
+    }: UpdateCard,
+  ): Promise<Card> {
+    const cardData = await this.cardsRepository.getFullCard(card_id);
+    const user = await this.usersRepository.findOne(user_id);
+
+    if (cardData.user.id !== user.id) {
+      throw new AppError('Unauthorized', 401);
+    }
+
+    let folderData = folder ? await this.foldersRepository.get(folder) : null;
+
+    const encryptedNumber = number ? encrypt(number, user.id) : cardData.number;
+    const encryptedSecurityCode = security_code
+      ? encrypt(security_code, user.id)
+      : cardData.security_code;
+
+    if (favorite === true) {
+      cardData.favorite = true;
+    } else if (favorite === false) {
+      cardData.favorite = false;
+    }
+
+    cardData.bank = bank || cardData.bank;
+    cardData.flag = flag || cardData.flag;
+    cardData.name = name || cardData.name;
+    cardData.note = note || cardData.note;
+    cardData.security_code = encryptedSecurityCode;
+    cardData.number = encryptedNumber;
+    cardData.folder = folderData || cardData.folder;
+
+    await this.cardsRepository.save(cardData);
+
+    return cardData;
   }
 }
 
