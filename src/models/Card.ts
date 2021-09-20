@@ -31,6 +31,9 @@ class Card {
   number: string;
 
   @Column()
+  password: string;
+
+  @Column()
   flag: string;
 
   @Column()

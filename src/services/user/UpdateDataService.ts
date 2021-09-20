@@ -1,40 +1,12 @@
-import AppError from '../../error/AppError';
 import { encrypt } from '../../lib/Crypt';
-
-import DataService from './DataService';
 
 import Credential from '../../models/Credential';
 import Note from '../../models/Note';
 import Card from '../../models/Card';
 
-type UpdateNote = {
-  name?: string;
-  note?: string;
-  folder?: string;
-  favorite?: boolean;
-};
+import DataService from './DataService';
 
-type UpdateCredential = {
-  folder?: string;
-  name?: string;
-  username?: string;
-  email?: string;
-  telephone?: string;
-  password?: string;
-  note?: string;
-  favorite?: boolean;
-};
-
-type UpdateCard = {
-  folder?: string;
-  name?: string;
-  number?: string;
-  flag?: string;
-  bank?: string;
-  security_code?: string;
-  note?: string;
-  favorite?: boolean;
-};
+import AppError from '../../error/AppError';
 
 class UpdateDataService extends DataService {
   async updateNote(
@@ -127,6 +99,7 @@ class UpdateDataService extends DataService {
       name,
       note,
       number,
+      password,
       security_code,
     }: UpdateCard,
   ): Promise<Card> {
@@ -143,6 +116,9 @@ class UpdateDataService extends DataService {
     const encryptedSecurityCode = security_code
       ? encrypt(security_code, user.id)
       : cardData.security_code;
+    const encryptPassword = password
+      ? encrypt(password, user.id)
+      : cardData.password;
 
     if (favorite === true) {
       cardData.favorite = true;
@@ -156,6 +132,7 @@ class UpdateDataService extends DataService {
     cardData.note = note || cardData.note;
     cardData.security_code = encryptedSecurityCode;
     cardData.number = encryptedNumber;
+    cardData.password = encryptPassword;
     cardData.folder = folderData || cardData.folder;
 
     await this.cardsRepository.save(cardData);

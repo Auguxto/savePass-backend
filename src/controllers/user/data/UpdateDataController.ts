@@ -65,6 +65,7 @@ class UpdateDataController {
       flag,
       name,
       number,
+      password,
       security_code,
       bank,
       favorite,
@@ -87,6 +88,7 @@ class UpdateDataController {
       name,
       note,
       number,
+      password,
       security_code,
     });
 

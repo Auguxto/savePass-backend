@@ -70,10 +70,11 @@ class CreateDataController {
       note,
       favorite,
       folder,
+      password,
     }: TCard = request.body;
     const user_id = request.user.id;
 
-    if (!name || !number || !flag || !security_code) {
+    if (!name || !number || !flag || !security_code || !password) {
       throw new AppError('Invalid request');
     }
 
@@ -83,6 +84,7 @@ class CreateDataController {
       user_id,
       name,
       number,
+      password,
       flag,
       bank,
       security_code,
