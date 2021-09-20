@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import AppError from '../../../error/AppError';
 
 import UpdateDataService from '../../../services/user/UpdateDataService';
+
+import AppError from '../../../error/AppError';
 
 class UpdateDataController {
   async updateNote(request: Request, response: Response) {
     const { id } = request.params;
-    const { name, note_text, favorite, folder }: TNote = request.body;
+    const params: TNote = request.body;
     const user_id = request.user.id;
 
     if (!id) {
@@ -16,10 +17,7 @@ class UpdateDataController {
     const userData = new UpdateDataService();
 
     const note = await userData.updateNote(id, user_id, {
-      name,
-      note: note_text,
-      favorite,
-      folder,
+      ...params,
     });
 
     return response.json({ note });
@@ -27,16 +25,7 @@ class UpdateDataController {
 
   async updateCredential(request: Request, response: Response) {
     const { id } = request.params;
-    const {
-      name,
-      username,
-      email,
-      telephone,
-      favorite,
-      folder,
-      note,
-      password,
-    }: TCredential = request.body;
+    const params: TCredential = request.body;
     const user_id = request.user.id;
 
     if (!id) {
@@ -46,14 +35,7 @@ class UpdateDataController {
     const userData = new UpdateDataService();
 
     const credential = await userData.updateCredential(id, user_id, {
-      name,
-      username,
-      email,
-      telephone,
-      favorite,
-      folder,
-      note,
-      password,
+      ...params,
     });
 
     return response.json({ credential });
@@ -61,17 +43,7 @@ class UpdateDataController {
 
   async updateCard(request: Request, response: Response) {
     const { id } = request.params;
-    const {
-      flag,
-      name,
-      number,
-      password,
-      security_code,
-      bank,
-      favorite,
-      folder,
-      note,
-    }: TCard = request.body;
+    const params: TCard = request.body;
     const user_id = request.user.id;
 
     if (!id) {
@@ -81,15 +53,7 @@ class UpdateDataController {
     const userData = new UpdateDataService();
 
     const card = await userData.updateCard(id, user_id, {
-      bank,
-      favorite,
-      flag,
-      folder,
-      name,
-      note,
-      number,
-      password,
-      security_code,
+      ...params,
     });
 
     return response.json({ card });
@@ -97,7 +61,7 @@ class UpdateDataController {
 
   async updateFolder(request: Request, response: Response) {
     const { id } = request.params;
-    const { name, favorite }: UpdateFolder = request.body;
+    const params: UpdateFolder = request.body;
     const user_id = request.user.id;
 
     if (!id) {
@@ -107,8 +71,7 @@ class UpdateDataController {
     const userData = new UpdateDataService();
 
     const folder = await userData.updateFolder(id, user_id, {
-      name,
-      favorite,
+      ...params,
     });
 
     return response.json({ folder });

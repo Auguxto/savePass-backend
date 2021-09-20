@@ -17,7 +17,7 @@ class CreateDataService extends DataService {
       select: ['id'],
     });
 
-    const encryptedNote = encrypt(params.note_text, user.id);
+    const encryptedNote = encrypt(params.note, user.id);
 
     const note = this.notesRepository.create({
       ...params,

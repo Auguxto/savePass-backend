@@ -2,7 +2,7 @@
 type TNote = {
   user_id?: string;
   name: string;
-  note_text: string;
+  note: string;
   favorite?: boolean;
   folder?: string;
 };

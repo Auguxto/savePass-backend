@@ -6,10 +6,10 @@ import CreateDataService from '../../../services/user/CreateDataService';
 
 class CreateDataController {
   async createNote(request: Request, response: Response) {
-    const { name, note_text, favorite, folder }: TNote = request.body;
+    const params: TNote = request.body;
     const user_id = request.user.id;
 
-    if (!name || !note_text) {
+    if (!params.name || !params.note) {
       throw new AppError('Invalid request');
     }
 
@@ -17,29 +17,17 @@ class CreateDataController {
 
     const note = await userData.createNote({
       user_id,
-      name,
-      note_text,
-      folder,
-      favorite,
+      ...params,
     });
 
     return response.json({ note });
   }
 
   async createCredential(request: Request, response: Response) {
-    const {
-      name,
-      password,
-      username,
-      email,
-      telephone,
-      note,
-      favorite,
-      folder,
-    }: TCredential = request.body;
+    const params: TCredential = request.body;
     const user_id = request.user.id;
 
-    if (!name || !password) {
+    if (!params.name || !params.password) {
       throw new AppError('Invalid request');
     }
 
@@ -47,34 +35,23 @@ class CreateDataController {
 
     const credential = await userData.createCredential({
       user_id,
-      name,
-      password,
-      username,
-      email,
-      telephone,
-      note,
-      favorite,
-      folder,
+      ...params,
     });
 
     return response.json({ credential });
   }
 
   async createCard(request: Request, response: Response) {
-    const {
-      name,
-      number,
-      flag,
-      bank,
-      security_code,
-      note,
-      favorite,
-      folder,
-      password,
-    }: TCard = request.body;
+    const params: TCard = request.body;
     const user_id = request.user.id;
 
-    if (!name || !number || !flag || !security_code || !password) {
+    if (
+      !params.name ||
+      !params.number ||
+      !params.flag ||
+      !params.security_code ||
+      !params.password
+    ) {
       throw new AppError('Invalid request');
     }
 
@@ -82,25 +59,17 @@ class CreateDataController {
 
     const card = await userData.createCard({
       user_id,
-      name,
-      number,
-      password,
-      flag,
-      bank,
-      security_code,
-      note,
-      favorite,
-      folder,
+      ...params,
     });
 
     return response.json({ card });
   }
 
   async createFolder(request: Request, response: Response) {
-    const { name }: TFolder = request.body;
+    const params: TFolder = request.body;
     const user_id = request.user.id;
 
-    if (!name) {
+    if (!params.name) {
       throw new AppError('Invalid request');
     }
 
@@ -108,7 +77,7 @@ class CreateDataController {
 
     const folder = await userData.createFolder({
       user_id,
-      name,
+      ...params,
     });
 
     return response.json({ folder });
