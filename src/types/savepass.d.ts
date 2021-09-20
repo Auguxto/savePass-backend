@@ -67,3 +67,8 @@ type UpdateCard = {
   note?: string;
   favorite?: boolean;
 };
+
+type UpdateFolder = {
+  name?: string;
+  favorite?: boolean;
+};

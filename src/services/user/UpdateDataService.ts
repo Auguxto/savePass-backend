@@ -3,6 +3,7 @@ import { encrypt } from '../../lib/Crypt';
 import Credential from '../../models/Credential';
 import Note from '../../models/Note';
 import Card from '../../models/Card';
+import Folder from '../../models/Folder';
 
 import DataService from './DataService';
 
@@ -138,6 +139,31 @@ class UpdateDataService extends DataService {
     await this.cardsRepository.save(cardData);
 
     return cardData;
+  }
+
+  async updateFolder(
+    folder_id: string,
+    user_id: string,
+    { name, favorite }: UpdateFolder,
+  ): Promise<Folder> {
+    const folder = await this.foldersRepository.get(folder_id);
+    const user = await this.usersRepository.findOne(user_id);
+
+    if (folder.user.id !== user.id) {
+      throw new AppError('Unauthorized', 401);
+    }
+
+    if (favorite === true) {
+      folder.favorite = true;
+    } else if (favorite === false) {
+      folder.favorite = false;
+    }
+
+    folder.name = name || folder.name;
+
+    await this.foldersRepository.save(folder);
+
+    return folder;
   }
 }
 

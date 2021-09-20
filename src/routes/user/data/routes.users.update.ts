@@ -11,5 +11,6 @@ const usersDataUpdate = Router();
 usersDataUpdate.patch('/note/:id', isAuth, updateData.updateNote);
 usersDataUpdate.patch('/card/:id', isAuth, updateData.updateCard);
 usersDataUpdate.patch('/credential/:id', isAuth, updateData.updateCredential);
+usersDataUpdate.patch('/folder/:id', isAuth, updateData.updateFolder);
 
 export default usersDataUpdate;

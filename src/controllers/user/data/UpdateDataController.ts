@@ -94,6 +94,25 @@ class UpdateDataController {
 
     return response.json({ card });
   }
+
+  async updateFolder(request: Request, response: Response) {
+    const { id } = request.params;
+    const { name, favorite }: UpdateFolder = request.body;
+    const user_id = request.user.id;
+
+    if (!id) {
+      throw new AppError('Invalid request');
+    }
+
+    const userData = new UpdateDataService();
+
+    const folder = await userData.updateFolder(id, user_id, {
+      name,
+      favorite,
+    });
+
+    return response.json({ folder });
+  }
 }
 
 export default UpdateDataController;
