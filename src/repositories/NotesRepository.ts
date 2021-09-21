@@ -19,7 +19,7 @@ class NotesRepository extends Repository<Note> {
     throw new AppError('Note not found');
   }
 
-  async getFullNote(note_id: string): Promise<Note> {
+  async getFull(note_id: string): Promise<Note> {
     const isUuid = validate(note_id);
     if (!isUuid) {
       throw new AppError('Invalid note');
@@ -27,7 +27,6 @@ class NotesRepository extends Repository<Note> {
 
     const note = await this.findOne(note_id, {
       relations: ['user', 'folder'],
-      select: ['name', 'favorite', 'note', 'id', 'created_at', 'updated_at'],
     });
     if (note) return note;
     throw new AppError('Note not found');

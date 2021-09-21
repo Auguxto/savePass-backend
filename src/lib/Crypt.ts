@@ -19,14 +19,15 @@ const encrypt = (value: any, secretKey: string) => {
   return `${iv.toString('hex')}.${encrypted.toString('hex')}`;
 };
 
-const decrypt = (hash: Hash, secretKey: string) => {
+const decrypt = (hashString: string, secretKey: string) => {
+  const hashArray = hashString.split('.');
   const decipher = crypto.createDecipheriv(
     algorithm,
-    secretKey,
-    Buffer.from(hash.iv, 'hex'),
+    secretKey.replaceAll('-', ''),
+    Buffer.from(hashArray[0], 'hex'),
   );
   const decrypted = Buffer.concat([
-    decipher.update(Buffer.from(hash.content, 'hex')),
+    decipher.update(Buffer.from(hashArray[1], 'hex')),
     decipher.final(),
   ]);
 

@@ -15,7 +15,7 @@ class UpdateDataService extends DataService {
     user_id: string,
     { name, favorite, folder, note }: UpdateNote,
   ): Promise<Note> {
-    const noteData = await this.notesRepository.getFullNote(note_id);
+    const noteData = await this.notesRepository.getFull(note_id);
     const user = await this.usersRepository.findOne(user_id);
 
     if (noteData.user.id !== user.id) {
@@ -55,7 +55,7 @@ class UpdateDataService extends DataService {
       username,
     }: UpdateCredential,
   ): Promise<Credential> {
-    const credentialData = await this.credentialsRepository.getFullCredential(
+    const credentialData = await this.credentialsRepository.getFull(
       credential_id,
     );
     const user = await this.usersRepository.findOne(user_id);
@@ -104,7 +104,7 @@ class UpdateDataService extends DataService {
       security_code,
     }: UpdateCard,
   ): Promise<Card> {
-    const cardData = await this.cardsRepository.getFullCard(card_id);
+    const cardData = await this.cardsRepository.getFull(card_id);
     const user = await this.usersRepository.findOne(user_id);
 
     if (cardData.user.id !== user.id) {

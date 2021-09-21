@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-import AppError from '../../../error/AppError';
-
 import CreateDataService from '../../../services/user/CreateDataService';
+
+import AppError from '../../../error/AppError';
 
 class CreateDataController {
   async createNote(request: Request, response: Response) {

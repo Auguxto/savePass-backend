@@ -19,7 +19,7 @@ class CardsRepository extends Repository<Card> {
     throw new AppError('Card not found');
   }
 
-  async getFullCard(card_id: string): Promise<Card> {
+  async getFull(card_id: string): Promise<Card> {
     const isUuid = validate(card_id);
     if (!isUuid) {
       throw new AppError('Invalid card');
@@ -27,18 +27,6 @@ class CardsRepository extends Repository<Card> {
 
     const card = await this.findOne(card_id, {
       relations: ['user', 'folder'],
-      select: [
-        'id',
-        'bank',
-        'name',
-        'note',
-        'number',
-        'flag',
-        'favorite',
-        'security_code',
-        'updated_at',
-        'created_at',
-      ],
     });
     if (card) return card;
     throw new AppError('Card not found');

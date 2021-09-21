@@ -14,12 +14,13 @@ class CredentialsRepository extends Repository<Credential> {
     }
     const credential = await this.findOne(credential_id, {
       select: ['id'],
+      relations: ['user'],
     });
     if (credential) return credential;
     throw new AppError('Credential not found');
   }
 
-  async getFullCredential(credential_id: string): Promise<Credential> {
+  async getFull(credential_id: string): Promise<Credential> {
     const isUuid = validate(credential_id);
     if (!isUuid) {
       throw new AppError('Invalid credential');
@@ -27,18 +28,6 @@ class CredentialsRepository extends Repository<Credential> {
 
     const credential = await this.findOne(credential_id, {
       relations: ['user', 'folder'],
-      select: [
-        'name',
-        'favorite',
-        'note',
-        'id',
-        'email',
-        'username',
-        'telephone',
-        'password',
-        'created_at',
-        'updated_at',
-      ],
     });
     if (credential) return credential;
     throw new AppError('Credential not found');

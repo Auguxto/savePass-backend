@@ -19,6 +19,19 @@ class FoldersRepository extends Repository<Folder> {
     if (folder) return folder;
     throw new AppError('Folder not found');
   }
+
+  async getFull(folder_id: string): Promise<Folder> {
+    const isUuid = validate(folder_id);
+    if (!isUuid) {
+      throw new AppError('Invalid folder');
+    }
+
+    const folder = await this.findOne(folder_id, {
+      relations: ['user', 'notes', 'credentials', 'cards'],
+    });
+    if (folder) return folder;
+    throw new AppError('Folder not found');
+  }
 }
 
 export default FoldersRepository;
